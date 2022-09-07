@@ -9,7 +9,6 @@ on:
 
 jobs:
   build:
-    needs: tag
     if: contains(github.ref, '/tags/v')
     runs-on: ubuntu-latest
     env:
