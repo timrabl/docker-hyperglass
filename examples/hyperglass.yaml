@@ -1,0 +1,15 @@
+debug: false
+developer_mode: false
+primary_asn: 65001
+org_name: Hyperglass Docker
+site_title: Hyperglass Docker
+site_description: Hyperglass in a nut.. docker container.
+
+listen_address: 0.0.0.0
+
+cache:
+  database: 0
+  host: redis
+  port: 6379
+  show_text: true
+  timeout: 120

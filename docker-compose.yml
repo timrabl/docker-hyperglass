@@ -1,0 +1,48 @@
+---
+version: "3.4"
+
+x-restart-policy: &x-restart-policy
+  restart: unless-stopped
+
+services:
+  redis:
+    image: redis:7-alpine
+    <<: *x-restart-policy
+    volumes:
+      - redis_data:/data
+
+  app:
+    image: timrabl/hyperglass:devel
+    <<: *x-restart-policy
+    depends_on:
+      - redis
+    volumes:
+      - app_static:/opt/hyperglass/hyperglass/static
+    healthcheck:
+      test: curl -fsL http://localhost:8001 | exit 1
+      interval: 10s
+      timeout: 15s
+      start_period: 3m
+      retries: 10
+# Example custom configuration adoptions...
+#      - ./custom_config/hyperglass.yml:/opt/hyperglass/hyperglass/hyperglass.yml
+#      - ./custom_config/commands.yml:/opt/hyperglass/hyperglass/commands.yml
+#      - ./custom_config/devices.yml:/opt/hyperglass/hyperglass/devices.yml
+
+  proxy:
+    image: nginx:1.23.1-alpine
+    <<: *x-restart-policy
+    depends_on:
+      - app
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+        # Generate selfsigned keypair with:
+        # openssl req -newkey rsa:4096 -new -nodes -x509 -days 3650 -keyout hyperglass_selfsigned_key.pem -out hyperglass_selfsigned_crt.pem -subj "/C=DE/ST=Bavaria/L=Rosenheim/CN=localhost"
+      - ./nginx/hyperglass_selfsigned_crt.pem:/etc/nginx/conf.d/hyperglass_selfsigned_crt.pem
+      - ./nginx/hyperglass_selfsigned_key.pem:/etc/nginx/conf.d/hyperglass_selfsigned_key.pem
+    ports:
+      - 1443:443
+
+volumes:
+  redis_data:
+  app_static:
