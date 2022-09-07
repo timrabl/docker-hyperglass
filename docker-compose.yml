@@ -19,7 +19,7 @@ services:
     volumes:
       - app_static:/opt/hyperglass/hyperglass/static
     healthcheck:
-      test: curl -f http://localhost:8001 | exit 1
+      test: curl -fsL http://localhost:8001 | exit 1
       interval: 10s
       timeout: 15s
       start_period: 1m
