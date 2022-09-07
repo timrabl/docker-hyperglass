@@ -13,7 +13,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: paulhatch/semantic-version@v4.0.2
+      - uses: paulhatch/semantic-version@v4.0.3
         with:
           tag_prefix: "v"
           major_pattern: "(MAJOR)"
