@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - 'v*'
-    branches:
-      - 'main'
 
 jobs:
   build:
@@ -14,6 +12,9 @@ jobs:
       - name: Get application version frorm Dockerfile
         run: echo "VERSION=$(grep 'ARG HYPER_VERSION' Dockerfile | sed -e 's/^.*=//g')" >> $GITHUB_ENV
         shell: bash
+
+       name: Get release verion from GitHub env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -45,6 +46,6 @@ jobs:
           push: true
           tags: |
             timrabl/hyperglass:latest
-            timrabl/hyperglass:${{ env.VERSION }}-${GITHUB_REF##*/}
+            timrabl/hyperglass:${{ env.VERSION }}-${{ env.RELEASE_VERSION }}
             ghcr.io/timrabl/hyperglass:latest
-            ghcr.io/timrabl/hyperglass:${{ env.VERSION }}-${GITHUB_REF##*/}
+            ghcr.io/timrabl/hyperglass:${{ env.VERSION }}-${{ env.RELEASE_VERSION }}
