@@ -9,7 +9,6 @@ on:
 
 jobs:
   build:
-    if: contains(github.ref, '/tags/v')
     runs-on: ubuntu-latest
     env:
       DOCKER_PATH: .
