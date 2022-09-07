@@ -10,11 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_PATH: .
     steps:
       - name: Get application version frorm Dockerfile
-        run: echo ::set-env name=VERSION::$(grep 'ARG HYPER_VERSION' ${DOCKER_PATH}/Dockerfile | sed -e 's/^.*=//g')
+        run: echo "VERSION=$(grep 'ARG HYPER_VERSION' Dockerfile | sed -e 's/^.*=//g')" >> $GITHUB_ENV
         shell: bash
 
       - name: Checkout
@@ -42,11 +40,11 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ${DOCKER_PATH}
+          context: .
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             timrabl/hyperglass:latest
-            timrabl/hyperglass:${{ env.HYPER_VERSION }}-${GITHUB_REF##*/}
+            timrabl/hyperglass:${{ env.VERSION }}-${GITHUB_REF##*/}
             ghcr.io/timrabl/hyperglass:latest
-            ghcr.io/timrabl/hyperglass:${{ env.HYPER_VERSION }}-${GITHUB_REF##*/}
+            ghcr.io/timrabl/hyperglass:${{ env.VERSION }}-${GITHUB_REF##*/}
