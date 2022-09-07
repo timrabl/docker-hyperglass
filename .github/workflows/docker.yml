@@ -20,7 +20,7 @@ jobs:
       DOCKER_PATH: .
     steps:
       - name: Get application version frorm Dockerfile
-        run: echo ::set-env name=VERSION::$(grep 'ARG HYPER_VERSION' ${{ DOCKER_PATH }}/Dockerfile | sed -e 's/^.*=//g')
+        run: echo ::set-env name=VERSION::$(grep 'ARG HYPER_VERSION' ${DOCKER_PATH}/Dockerfile | sed -e 's/^.*=//g')
         shell: bash
 
       - name: Checkout
@@ -48,7 +48,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ${{ DOCKER_PATH }}
+          context: ${DOCKER_PATH}
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
