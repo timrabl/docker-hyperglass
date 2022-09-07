@@ -6,16 +6,12 @@ on:
       - 'v*'
     branches:
       - 'main'
-  pull_request:
-    tags:
-      - 'v*'
-    branches:
-      - 'main'
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    needs: tag
     if: contains(github.ref, '/tags/v')
+    runs-on: ubuntu-latest
     env:
       DOCKER_PATH: .
     steps:
