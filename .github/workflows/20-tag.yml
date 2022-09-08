@@ -1,3 +1,4 @@
+---
 name: tag
 
 on:
@@ -8,8 +9,8 @@ on:
     workflows:
       - lint
       - pre
-    type:
-      - complete
+    types:
+      - completed
 
 jobs:
   tag:

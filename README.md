@@ -2,7 +2,8 @@
 
 [![GitHub Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
-## Repositories ##
+## Repositories
+
 [![Docker Repository on Quay](https://quay.io/repository/timrabl/hyperglass/status "Docker Repository on Quay")](https://quay.io/repository/timrabl/hyperglass)
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/timrabl/hyperglass)
 
