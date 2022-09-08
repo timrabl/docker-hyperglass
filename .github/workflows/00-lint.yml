@@ -12,7 +12,7 @@ on:
 
 jobs:
   lint:
-    name: Lint code base
+    name: Lint the code base
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
