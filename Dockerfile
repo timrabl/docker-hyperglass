@@ -6,7 +6,7 @@ ENV APP_ROOT /opt/hyperglass
 ENV PATH ${APP_ROOT}/venv/bin:${PATH}
 ARG HYPER_VERSION=1.0.4
 
-RUN apk add --update --no-cache --virtual .build-deps gcc freetype-dev musl-dev openssl-dev jpeg-dev make libc-dev python3-dev && \
+RUN apk add --update --no-cache --virtual .build-deps gcc freetype-dev musl-dev openssl-dev libffi-dev jpeg-dev make libc-dev python3-dev && \
     apk add --update --no-cache nodejs yarn curl libjpeg freetype openssl ethtool libffi libc6-compat linux-headers && \
     addgroup -S hyperglass && \
     adduser -D -G hyperglass -h ${APP_ROOT} hyperglass && \
