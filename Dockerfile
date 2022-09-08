@@ -7,7 +7,7 @@ ENV PATH ${APP_ROOT}/venv/bin:${PATH}
 ARG HYPER_VERSION=1.0.4
 
 RUN apk add --update --no-cache --virtual .build-deps gcc freetype-dev musl-dev openssl-dev jpeg-dev make libc-dev python3-dev && \
-    apk add --update --no-cache nodejs yarn curl libjpeg freetype openssl ethtool libc6-compat linux-headers && \
+    apk add --update --no-cache nodejs yarn curl libjpeg freetype openssl ethtool libffi libc6-compat linux-headers && \
     addgroup -S hyperglass && \
     adduser -D -G hyperglass -h ${APP_ROOT} hyperglass && \
     chown hyperglass:hyperglass ${APP_ROOT}
