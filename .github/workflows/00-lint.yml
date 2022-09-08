@@ -10,10 +10,6 @@ on:
 
   workflow_dispatch:
 
-  pull_request:
-    branches:
-      - '*'
-
 jobs:
   lint:
     name: Lint code base
