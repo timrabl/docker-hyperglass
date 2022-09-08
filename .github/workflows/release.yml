@@ -6,7 +6,7 @@ on:
       - 'main'
 
 jobs:
-  tag:
+  tagging:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,6 +22,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    needs: tagging
     steps:
       - name: Get application version frorm Dockerfile
         run: echo "VERSION=$(grep 'ARG HYPER_VERSION' Dockerfile | sed -e 's/^.*=//g')" >> $GITHUB_ENV
