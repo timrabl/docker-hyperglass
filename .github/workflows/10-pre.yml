@@ -14,8 +14,6 @@ on:
 jobs:
   pre:
     runs-on: ubuntu-latest
-    needs:
-      - lint
     outputs:
       version: ${{ steps.get_app_version.outputs.app_version }}
     steps:
