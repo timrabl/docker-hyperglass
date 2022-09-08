@@ -1,5 +1,12 @@
 # docker-hyperglass
 
+[![GitHub Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
+## Repositories
+
+[![Docker Repository on Quay](https://quay.io/repository/timrabl/hyperglass/status "Docker Repository on Quay")](https://quay.io/repository/timrabl/hyperglass)
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/timrabl/hyperglass)
+
 A fork of [Hyperglass](https://github.com/thatmattlove/hyperglass), a network looking glass that tries to make the internet better...
 But in a docker container...
 
