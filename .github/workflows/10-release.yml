@@ -82,7 +82,6 @@ jobs:
           RELEASE: ${{ needs.tag.outputs.tag }}
         with:
           context: .
-          load: true
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
