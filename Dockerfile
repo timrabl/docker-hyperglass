@@ -2,8 +2,6 @@
 # alpine 3.14 required for nodejs=14.20.0-r0
 FROM python:3.9-alpine3.14
 
-LABEL org.opencontainers.image.description "Hyperglass in a nut... docker container."
-
 ENV APP_ROOT /opt/hyperglass
 ENV PATH ${APP_ROOT}/venv/bin:${PATH}
 ARG HYPER_VERSION=1.0.4
@@ -33,4 +31,4 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 EXPOSE 8001
 
 ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh"]
-CMD ["hyperglass", "start", "--build"]
+CMD ["hyperglass", "start"]
