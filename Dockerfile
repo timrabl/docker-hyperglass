@@ -27,6 +27,7 @@ USER root
 RUN apk del .build-deps
 USER hyperglass
 
+COPY healthcheck.sh /usr/local/bin/healthcheck
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 EXPOSE 8001
 
