@@ -2,14 +2,13 @@
 name: pre
 
 on:
-  push:
-    branches:
-      - 'main'
-      - 'master'
-  pull_request:
-    branches:
-      - 'main'
-      - 'master'
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_run:
+    workflows:
+      - lint
+    types:
+      - completed
 
 jobs:
   pre:
@@ -58,6 +57,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        env:
+          VERSION: ${{ needs.pre.outputs.version }}
+          RELEASE: ${{ needs.tag.outputs.tag }}
+        with:
+          images: |
+            ${{ github.repository_owner }}/hyperglass
+            ghcr.io/${{ github.repository_owner }}/hyperglass
+            quay.io/${{ github.repository_owner }}/hyperglass
+          tags: |
+            latest=auto
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}},value=${{ env.RELEASE }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ env.RELEASE }}
+            type=semver,pattern={{major}},value=${{ env.RELEASE }}
+            type=sha
+            type=sha,format=long
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -91,15 +111,10 @@ jobs:
           RELEASE: ${{ needs.tag.outputs.tag }}
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            ${{ github.repository_owner }}/hyperglass:latest
-            ${{ github.repository_owner }}/hyperglass:${{ env.VERSION }}-${{ env.RELEASE }}
-            ghcr.io/${{ github.repository_owner }}/hyperglass:latest
-            ghcr.io/${{ github.repository_owner }}/hyperglass:${{ env.VERSION }}-${{ env.RELEASE }}
-            quay.io/${{ github.repository_owner }}/hyperglass:latest
-            quay.io/${{ github.repository_owner }}/hyperglass:${{ env.VERSION }}-${{ env.RELEASE }}
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: Export hyperglass image archive
         env:

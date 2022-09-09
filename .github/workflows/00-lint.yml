@@ -6,9 +6,9 @@ on:
     branches:
       - '!main'
       - '!master'
-      - '*'
+      - '**'
     tags:
-      - '!*'
+      - 'v*.*.*'
 
   workflow_dispatch:
 
