@@ -18,8 +18,8 @@ USER hyperglass
 
 RUN python3 -m venv ${APP_ROOT}/venv && \
     . ${APP_ROOT}/venv/bin/activate && \
-    pip3 install wheel pip && \
-    pip3 install hyperglass==${HYPER_VERSION} && \
+    pip3 install --no-cache-dir wheel pip && \
+    pip3 install --no-cache-dir hyperglass==${HYPER_VERSION} && \
     mkdir ${APP_ROOT}/certs && \
     hyperglass setup -d
 
