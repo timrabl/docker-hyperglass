@@ -68,6 +68,8 @@ services:
   redis:
     image: redis:7-alpine
     <<: *x-restart-policy
+    volumes:
+      - redis_data:/data
 
   app:
     image: docker.io/timrabl/hyperglass:latest
@@ -77,19 +79,17 @@ services:
     depends_on:
       - redis
     volumes:
-      - type: volume
-        source: hyper_static
-        target: /opt/hyperglass/hyperglass/static
-    # Example custom configuration adoptions...
-    #      - type: bind
-    #        source: ./custom_config/hyperglass.yml
-    #        target: /opt/hyperglass/hyperglass/hyperglass.yml
-    #      - type: bind
-    #        source: ./custom_config/commands.yml
-    #        target: /opt/hyperglass/hyperglass/commands.yml
-    #      - type: bind
-    #        source: ./custom_config/devices.yml
-    #        target: /opt/hyperglass/hyperglass/devices.yml
+      - app_static:/opt/hyperglass/hyperglass/static
+    healthcheck:
+      test: heathcheck
+      interval: 10s
+      timeout: 15s
+      start_period: 1m
+      retries: 10
+# Example custom configuration adoptions...
+#      - ./custom_config/hyperglass.yml:/opt/hyperglass/hyperglass/hyperglass.yml
+#      - ./custom_config/commands.yml:/opt/hyperglass/hyperglass/commands.yml
+#      - ./custom_config/devices.yml:/opt/hyperglass/hyperglass/devices.yml
 
   proxy:
     image: nginx:1.23.1-alpine
@@ -97,20 +97,15 @@ services:
     depends_on:
       - app
     volumes:
-      - type: volume
-        source: nginx/default.conf
-        target: /etc/nginx/conf.d/default.conf
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
         # Generate selfsigned keypair with:
         # openssl req -newkey rsa:4096 -new -nodes -x509 -days 3650 -keyout hyperglass_selfsigned_key.pem -out hyperglass_selfsigned_crt.pem -subj "/C=DE/ST=Bavaria/L=Rosenheim/CN=localhost"
-      - type: volume
-        source: nginx/hyperglass_selfsigned_crt.pem
-        target: /etc/nginx/conf.d/hyperglass_selfsigned_crt.pem
-      - type: volume
-        source: nginx/hyperglass_selfsigned_key.pem
-        target: /etc/nginx/conf.d/hyperglass_selfsigned_key.pem
+      - ./nginx/hyperglass_selfsigned_crt.pem:/etc/nginx/conf.d/hyperglass_selfsigned_crt.pem
+      - ./nginx/hyperglass_selfsigned_key.pem:/etc/nginx/conf.d/hyperglass_selfsigned_key.pem
     ports:
       - 1443:443
 
 volumes:
-  hyper_static:
+  redis_data:
+  app_static:
 ```
