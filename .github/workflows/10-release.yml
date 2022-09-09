@@ -57,7 +57,7 @@ jobs:
         uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 0
-          
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -102,6 +102,9 @@ jobs:
             quay.io/${{ github.repository_owner }}/hyperglass:${{ env.VERSION }}-${{ env.RELEASE }}
 
       - name: Export hyperglass image archive
+        env:
+          VERSION: ${{ needs.pre.outputs.version }}
+          RELEASE: ${{ needs.tag.outputs.tag }}
         run: >
           docker save ${{ github.repository_owner }}/hyperglass:${{ env.VERSION }}-${{ env.RELEASE }} | gzip
           > hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
@@ -115,7 +118,12 @@ jobs:
 
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
+        env:
+          VERSION: ${{ needs.pre.outputs.version }}
+          RELEASE: ${{ needs.tag.outputs.tag }}
         with:
           tag: ${{ needs.tag.outputs.tag }}
           name: Release ${{ needs.tag.outputs.tag }}
           body: ${{ needs.tag.outputs.tag }}
+          artifactErrorsFailBuild: true
+          artifacts: hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
