@@ -116,21 +116,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Export hyperglass image archive
-        env:
-          VERSION: ${{ needs.pre.outputs.version }}
-          RELEASE: ${{ needs.tag.outputs.tag }}
-        run: >
-          docker save ${{ github.repository_owner }}/hyperglass:${{ env.VERSION }}-${{ env.RELEASE }} | gzip
-          > hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
-
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: Docker image
-          path: |
-            hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
-
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         env:
@@ -140,5 +125,3 @@ jobs:
           tag: ${{ needs.tag.outputs.tag }}
           name: Release ${{ needs.tag.outputs.tag }}
           body: ${{ needs.tag.outputs.tag }}
-          artifactErrorsFailBuild: true
-          artifacts: hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
