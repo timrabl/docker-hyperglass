@@ -24,7 +24,7 @@ Afterwards these images are pushed automatically to the following registries:
 
 Hyperglass relies on a redis as a caching host. Thank god we have docker, so for the sake of simplicity we just start a redis container next to the one that contains hyperglass. If you don't want to use redis container just overwrite the redis host parameter in the configuration to your preferred redis instance.
 
-## Before your start
+## Before you start
 
 In addition to redis i highly recommend to not expose the default image port (HTTP/8001), even if this image exposes this port. This image is intended to just encapsulate the hyperglass application in a container and does not extend any functionality of the main application. If there is a missing application feature, open a issue at the official [hyperglass repository](https://github.com/thatmattlove/hyperglass/issues).
 
