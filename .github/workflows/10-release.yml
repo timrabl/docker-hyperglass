@@ -2,11 +2,11 @@
 name: pre
 
 on:
-  workflow_run:
-    workflows:
-      - lint
-    types:
-      - completed
+  branches:
+    - 'main'
+    - 'master'
+  shedule:
+    - cron: '0 2 * * *'
 
 jobs:
   pre:

@@ -4,6 +4,8 @@ name: lint
 on:
   push:
     branches:
+      - '!main'
+      - '!master'
       - '**'
     tags:
       - 'v*.*.*'
