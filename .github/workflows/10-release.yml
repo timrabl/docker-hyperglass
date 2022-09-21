@@ -67,8 +67,9 @@ jobs:
             docker.io/${{ github.repository_owner }}/hyperglass
             ghcr.io/${{ github.repository_owner }}/hyperglass
             quay.io/${{ github.repository_owner }}/hyperglass
-          tags: |
+          flavor: |
             latest=auto
+          tags: |
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}},value=${{ env.RELEASE }}
