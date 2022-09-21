@@ -16,9 +16,9 @@ The latest docker image (based on the default branch: _main_) is build daily at 
 
 Afterwards these images are pushed automatically to the following registries:
 
-- docker.io
-- ghcr.io
-- quay.io
+- docker.io/timrabl/hyperglass
+- ghcr.io/timrabl/hyperglass
+- quay.io/timrabl/hyperglass
 
 ## Prerequisites
 
