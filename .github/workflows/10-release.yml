@@ -2,10 +2,11 @@
 name: pre
 
 on:
-  branches:
-    - 'main'
-    - 'master'
-  shedule:
+  push:
+    branches:
+      - 'main'
+      - 'master'
+  schedule:
     - cron: '0 2 * * *'
 
 jobs:
