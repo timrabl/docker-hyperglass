@@ -64,7 +64,7 @@ jobs:
           RELEASE: ${{ needs.tag.outputs.tag }}
         with:
           images: |
-            ${{ github.repository_owner }}/hyperglass
+            docker.io/${{ github.repository_owner }}/hyperglass
             ghcr.io/${{ github.repository_owner }}/hyperglass
             quay.io/${{ github.repository_owner }}/hyperglass
           tags: |
