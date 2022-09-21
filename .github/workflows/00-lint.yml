@@ -3,14 +3,16 @@ name: lint
 
 on:
   workflow_dispatch:
+  
   push:
-    branches:
-      - '!main'
-      - '!master'
+    branches-ignore:
+      - master
+      - main
+  
   pull_request:
-    branches:
-      - '!main'
-      - '!master'
+    branches-ignore:
+      - master
+      - main
       
 jobs:
   lint:
