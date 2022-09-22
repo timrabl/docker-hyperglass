@@ -1,0 +1,28 @@
+---
+name: gathering
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  gather:
+    name: Gather information's needed by later pipelines
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.get_app_version.outputs.app_version }}
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v3.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Get application version from Dockerfile
+        id: get_app_version
+        run: echo "::set-output name=app_version::$(grep 'ARG HYPER_VERSION' Dockerfile | sed -e 's/^.*=//g')"
+        shell: bash

@@ -3,21 +3,21 @@ name: lint
 
 on:
   workflow_dispatch:
-  
+
   push:
     branches-ignore:
       - master
       - main
-  
+
   pull_request:
-    branches-ignore:
-      - master
-      - main
-      
+    branches:
+      - '**'
+
 jobs:
   lint:
     name: Lint the code base
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

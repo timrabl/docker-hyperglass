@@ -1,0 +1,31 @@
+---
+name: docs
+
+on:
+  workflow_run:
+    workflows:
+      - gathering
+    types:
+      - completed
+    branches:
+      - main
+      - master
+
+jobs:
+  dockerhub:
+    name: Update README at DockerHub
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.client_payload.ref }}
+
+      - name: DockerHub description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          short-description: ${{ github.event.repository.description }}

@@ -1,0 +1,37 @@
+---
+name: pre
+
+on:
+  # schedule:
+  #   - cron: '0 2 * * *'
+  workflow_run:
+    workflows:
+      - docs
+    types:
+      - completed
+    branches:
+      - main
+      - master
+
+jobs:
+
+  tagging:
+    name: Create a new version/tag based on previous ones and commits
+    runs-on: ubuntu-latest
+
+    outputs:
+      tag: ${{ steps.tag_version.outputs.new_tag }}
+      changelog: ${{ steps.tag_version.outputs.changelog }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+

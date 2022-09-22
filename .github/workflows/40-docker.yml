@@ -2,54 +2,34 @@
 name: pre
 
 on:
-  push:
-    branches:
-      - 'main'
-      - 'master'
   schedule:
     - cron: '0 2 * * *'
+  workflow_run:
+    workflows:
+      - gather
+    types:
+      - completed
+    branches:
+      - main
+      - master
 
 jobs:
-  pre:
-    runs-on: ubuntu-latest
-    if: contains('refs/heads/main', github.ref)
-    outputs:
-      version: ${{ steps.get_app_version.outputs.app_version }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3.0.2
-        with:
-          fetch-depth: 0
-
-      - name: Get application version from Dockerfile
-        id: get_app_version
-        run: echo "::set-output name=app_version::$(grep 'ARG HYPER_VERSION' Dockerfile | sed -e 's/^.*=//g')"
-        shell: bash
-
-  tag:
-    runs-on: ubuntu-latest
-    needs:
-      - pre
-    outputs:
-      tag: ${{ steps.tag_version.outputs.new_tag }}
-      changelog: ${{ steps.tag_version.outputs.changelog }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3.0.2
-        with:
-          fetch-depth: 0
-
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
   docker:
+    name: Build docker images
     runs-on: ubuntu-latest
+
     needs:
-      - pre
-      - tag
+      - gathering
+      - tagging
+
+    env:
+      VERSION: ${{ needs.gathering.outputs.version }}
+      RELEASE: ${{ needs.tagging.outputs.tag }}
+
+      DOCKERHUB_REGISTRY: docker.io
+      GITHUB_REGISTRY: ghcr.io
+      REDHAT_REGISTRY: quay.io
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3.0.2
@@ -59,9 +39,6 @@ jobs:
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
-        env:
-          VERSION: ${{ needs.pre.outputs.version }}
-          RELEASE: ${{ needs.tag.outputs.tag }}
         with:
           images: |
             docker.io/${{ github.repository_owner }}/hyperglass
@@ -87,28 +64,26 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
+          registry: ${{ env.DOCKERHUB_REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
+          registry: ${{ env.GITHUB_REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to RedHat Container Registry
         uses: docker/login-action@v2
         with:
-          registry: quay.io
+          registry: ${{ env.REDHAT_REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.QUAY_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v3
-        env:
-          VERSION: ${{ needs.pre.outputs.version }}
-          RELEASE: ${{ needs.tag.outputs.tag }}
         with:
           context: .
           push: true
@@ -117,9 +92,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Export hyperglass image archive
-        env:
-          VERSION: ${{ needs.pre.outputs.version }}
-          RELEASE: ${{ needs.tag.outputs.tag }}
         run: >
           docker save ${{ github.repository_owner }}/hyperglass:${{ env.VERSION }}-${{ env.RELEASE }} | gzip
           > hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
@@ -127,18 +99,5 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: Docker image
-          path: |
-            hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
-
-      - name: Create a GitHub release
-        uses: ncipollo/release-action@v1
-        env:
-          VERSION: ${{ needs.pre.outputs.version }}
-          RELEASE: ${{ needs.tag.outputs.tag }}
-        with:
-          tag: ${{ needs.tag.outputs.tag }}
-          name: Release ${{ needs.tag.outputs.tag }}
-          body: ${{ needs.tag.outputs.tag }}
-          artifactErrorsFailBuild: true
-          artifacts: hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
+          name: Upload GZIP archive to GitHub artifacts
+          path: hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
