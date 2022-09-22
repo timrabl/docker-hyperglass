@@ -14,7 +14,6 @@ on:
       - master
 
 jobs:
-
   tagging:
     name: Create a new version/tag based on previous ones and commits
     runs-on: ubuntu-latest
@@ -34,4 +33,3 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-

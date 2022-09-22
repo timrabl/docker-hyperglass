@@ -3,7 +3,7 @@ name: pre
 
 on:
   schedule:
-    - cron: '0 2 * * *'
+    - cron: "0 2 * * *"
   workflow_run:
     workflows:
       - gather

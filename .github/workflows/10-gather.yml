@@ -16,7 +16,6 @@ jobs:
       version: ${{ steps.get_app_version.outputs.app_version }}
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v3.0.2
         with:
@@ -24,5 +23,7 @@ jobs:
 
       - name: Get application version from Dockerfile
         id: get_app_version
-        run: echo "::set-output name=app_version::$(grep 'ARG HYPER_VERSION' Dockerfile | sed -e 's/^.*=//g')"
+        run: |
+          VERSION=$(grep 'ARG HYPER_VERSION' Dockerfile | sed -e 's/^.*=//g')
+          echo "::set-output name=app_version::${VERSION}"
         shell: bash
