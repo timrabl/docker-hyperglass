@@ -130,23 +130,3 @@ jobs:
           name: Docker image
           path: |
             hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
-
-      - name: Build Changelog
-        id: build_changelog
-        uses: mikepenz/release-changelog-builder-action@v3
-        with:
-          configuration: ./changelog_config.json
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create a GitHub release
-        uses: ncipollo/release-action@v1
-        env:
-          VERSION: ${{ needs.pre.outputs.version }}
-          RELEASE: ${{ needs.tag.outputs.tag }}
-        with:
-          tag: ${{ needs.tag.outputs.tag }}
-          name: Release ${{ needs.tag.outputs.tag }}
-          body: ${{ steps.build_changelog.outputs.changelog }}
-          artifactErrorsFailBuild: true
-          artifacts: hyperglass_${{ env.VERSION }}_release_${{ env.RELEASE }}.gzip
